@@ -29,12 +29,13 @@ using namespace std;
 const ll inf = 1ll<<60;
 const int iinf=2147483647;
 const ll mod = 1e9+7;
-const ll maxn=5e3+5;
+const ll maxn=(1<<9)+5;
 ll pw(ll x, ll p){
     ll ret=1;
     while (p>0){
         if (p&1){
             ret*=x;
+            ret%=mod;
         }
         x*=x;
         x%=mod;
@@ -46,9 +47,17 @@ ll pw(ll x, ll p){
 ll inv(ll a, ll b){
     return 1<a ? b - inv(b%a,a)*b/a : 1;
 }
-
+ll inv2(ll a){
+    return pw(a,mod-2)%mod;
+}
 signed main (){
     IOS();
-    mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
-    cout<<rng()<<endl;
+    int T; cin>>T;
+    while (T--){
+        int n,m; cin>>n>>m;
+        if (m%n!=0){
+            cout<<-1<<endl;
+        }        
+        else cout<<n<<' '<<m<<endl;
+    }
 }

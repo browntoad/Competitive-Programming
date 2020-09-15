@@ -26,17 +26,16 @@ using namespace std;
 #define bug(...)
 #define IOS() ios::sync_with_stdio(0), cin.tie(0), cout.tie(0)
 #endif
-
 const ll inf = 1ll<<60;
 const int iinf=2147483647;
 const ll mod = 1e9+7;
-const ll maxn=5e3+5;
-
+const ll maxn=2e5+5;
 ll pw(ll x, ll p){
     ll ret=1;
     while (p>0){
         if (p&1){
             ret*=x;
+            ret%=mod;
         }
         x*=x;
         x%=mod;
@@ -48,11 +47,43 @@ ll pw(ll x, ll p){
 ll inv(ll a, ll b){
     return 1<a ? b - inv(b%a,a)*b/a : 1;
 }
+int tre[4*maxn];
 
-//=======================================================================================
-
+int QU(int l, int r, int nl, int nr, int x){
+    if (nl>r||nr<l){
+        return 0;
+    }
+    if (nl>=l&&nr<=r){
+        return tre[x];
+    }
+    int mid=(nl+nr)/2;
+    return max(QU(l, r, nl, mid, x+x), QU(l, r, mid+1, nr, x+x+1));
+}
+void MO(int l, int r, int pos, int x, int val){
+    if (l==r){
+        tre[x]+=val;
+        return;
+    }
+    int mid=(l+r)/2;
+    if (l<=pos&&pos<=mid){
+        MO(l, mid, pos, x+x, val);
+    }
+    else MO(mid+1, r, pos, x+x+1, val);
+    tre[x]=max(tre[x+x], tre[x+x+1]);
+}
 
 signed main (){
     IOS();
-    // code
+    int n; cin>>n;
+    vector<int> h(n), a(n);
+    REP(i,n) cin>>h[i];
+    REP(i,n) cin>>a[i];
+    int ans=0;
+    REP(i,n){
+        int prev=QU(1, h[i], 1, n , 1); //can also do h[i]-1
+
+        bug(prev);
+        MO(1, n, h[i], 1, prev+a[i]);
+    }
+    cout<<QU(1, n, 1, n, 1)<<endl;
 }
