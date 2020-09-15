@@ -49,6 +49,9 @@ ll pw(ll x, ll p, ll m=mod){
 ll inv(ll a, ll m=mod){
     return pw(a,m-2);
 }
+ll inv2(ll a, ll md){
+    return pw(a,md-2);
+}
 
 
 //=======================================================================================
