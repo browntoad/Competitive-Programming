@@ -37,7 +37,7 @@ int F(int n){
 	int y=x;
 	int d=1;
 	auto g=[&](int x){
-		return (x*x-5)%n;
+		return (x*x+1)%n;
 	};
 	while (d==1){
 		x=g(x);
