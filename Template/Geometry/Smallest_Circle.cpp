@@ -47,16 +47,39 @@ ll pw(ll x, ll p){
 ll inv(ll a){
 	return pw(a,mod-2);	
 }
-vector<int> par(maxn);
-int find(int x){
-	if (par[x]==x) return x;
-	else return par[x] = find(par[x]);
+struct Point{
+	double x,y;
 }
-void uni(int a, int b){
-	a=find(a); b=find(b);
-	par[a]=b;
+double dis(Point a, Point b){
+	return sqrt(SQ(a.x-b.x)+SQ(a.y-b.y))
+}
+Point cc(Point a, Point b, Point c){
+	// complete 
 }
 signed main(){
 	IOS();
-    REP1(i,maxn) par[i]=i;
+	int n; cin>>n;
+	vector<Point> vc(n);
+	REP(i,n) cin>>vc[i];
+	random_shuffle(ALL(vc));
+	int r=0
+	Point cent=0;
+	REP(i,n){
+		if (dis(vc[i], cent)<=r) continue;
+		cent=vc[i];
+		REP(j,n){
+			if (i==j) continue;
+			if (dis(vc[j], cent)<=r) continue;
+			cent.x=(vc[j].x+cent.x)/2.0;
+			cent.y=(vc[j].y+cent.y)/2.0;
+			r=dis(vc[j], cent);
+			REP(k,n){
+				if (dis(vc[k], cent)<=r){
+					continue;
+				}
+				cent=cc(vc[i], vc[j], vc[k]);
+				r=dis(vc[k], cent);
+			}
+		}
+	}
 }

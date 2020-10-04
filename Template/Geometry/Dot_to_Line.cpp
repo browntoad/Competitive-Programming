@@ -47,16 +47,26 @@ ll pw(ll x, ll p){
 ll inv(ll a){
 	return pw(a,mod-2);	
 }
-vector<int> par(maxn);
-int find(int x){
-	if (par[x]==x) return x;
-	else return par[x] = find(par[x]);
+struct Point{
+	double x,y;
+};
+double distance (Point a, Point b){
+	return sqrt(SQ(b.x-a.x)+SQ(b.y-a.y));
 }
-void uni(int a, int b){
-	a=find(a); b=find(b);
-	par[a]=b;
+double cross(Point a, Point b){
+	return a.x*b.y-b.x*a.y;
+}
+Point subtract(Point a, Point b){
+	return {a.x-b.x, a.y-b.y};
 }
 signed main(){
 	IOS();
-    REP1(i,maxn) par[i]=i;
+	double a,b,c; cin>>a>>b>>c; //ax+by=c
+	Point Q;
+	cin>>Q.x>>Q.y;
+	Point P={0,c/b};
+	Point V={c/a, 0};
+	double up=cross(subtract(Q,P), subtract(V,P));
+	double down=abs(distance(V,P));
+	cout<<up/down<<endl;
 }

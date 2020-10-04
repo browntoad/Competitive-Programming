@@ -47,16 +47,39 @@ ll pw(ll x, ll p){
 ll inv(ll a){
 	return pw(a,mod-2);	
 }
-vector<int> par(maxn);
-int find(int x){
-	if (par[x]==x) return x;
-	else return par[x] = find(par[x]);
+struct Point{
+	double x,y;
+};
+double distance (Point a, Point b){
+	return sqrt(SQ(b.x-a.x)+SQ(b.y-a.y));
 }
-void uni(int a, int b){
-	a=find(a); b=find(b);
-	par[a]=b;
+int cross(Point a, Point b){
+	return a.x*b.y-b.x*a.y;
 }
+Point subtract(Point a, Point b){
+	return {a.x-b.x, a.y-b.y};
+}
+ll sign(ll a){
+	if (a<0) return -1;
+	return a>0;
+}
+
+// code only works if two segments are not collinear
 signed main(){
 	IOS();
-    REP1(i,maxn) par[i]=i;
+	int t; cin>>t;
+	while(t--){
+		Point a,b; cin>>a.x>>a.y>>b.x>>b.y; //same segment
+		Point c,d; cin>>c.x>>c.y>>d.x>>d.y; // same segment
+		if (sign(cross(subtract(a,c), subtract(d,c)))*sign(cross(subtract(b,c), subtract(d,c)))>0||
+		sign(cross(subtract(c,a), subtract(b,a)))*sign(cross(subtract(d,a), subtract(c,a)))>0){
+			cout<<"No\n"<<endl; // they  do not intersect
+		}									
+		else {
+			cout<<"Yes\n"<<endl; // they intersect
+		}			
+	}
+					
+
+
 }

@@ -47,16 +47,9 @@ ll pw(ll x, ll p){
 ll inv(ll a){
 	return pw(a,mod-2);	
 }
-vector<int> par(maxn);
-int find(int x){
-	if (par[x]==x) return x;
-	else return par[x] = find(par[x]);
-}
-void uni(int a, int b){
-	a=find(a); b=find(b);
-	par[a]=b;
-}
 signed main(){
 	IOS();
-    REP1(i,maxn) par[i]=i;
+	//complete it
+
+	
 }
