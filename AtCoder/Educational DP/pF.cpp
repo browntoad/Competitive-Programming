@@ -13,7 +13,7 @@ using namespace std;
 #define ALL(x) x.begin(),x.end()
 #define SZ(x) (int)(x.size())
 #define SQ(x) (x)*(x)
-using pii = pair<int, int>;
+#define pii pair<int, int>
 #define pdd pair<double ,double>
 #define pcc pair<char, char> 
 #define endl '\n'
@@ -28,31 +28,53 @@ using pii = pair<int, int>;
 const ll inf = 1ll<<60;
 const int iinf=2147483647;
 const ll mod = 1e9+7;
-const ll maxn=2e5+5;
-
+const ll maxn=3005;
 const double PI=acos(-1);
-int F(int n){
-	if (n>2&&n%2==0) return 2;
-	int x=rand()%n;
-	int y=x;
-	int d=1;
-	auto g=[&](int x){
-		return (x*x+1)%n;
-	};
-	while (d==1){
-		x=g(x);
-		y=g(g(y));
-		 d=gcd(abs(x-y), n);
+ll pw(ll x, ll p){
+    ll ret=1;
+    while (p>0){
+        if (p&1){
+            ret*=x;
+			ret%=mod;
+        }
+        x*=x;
+        x%=mod;
+        p>>=1;
+    }
+    return ret;
+}
+
+ll inv(ll a){
+	return pw(a,mod-2);	
+}
+int dp[maxn][maxn];
+string res, S, T;
+void DP(int i, int j){
+	if (i==0||j==0){
+		return;
 	}
-	if (d==n){
-		return -1;
+	if (S[i-1]==T[j-1]){
+		DP(i-1,j-1);
+		res+=S[i-1];
+		return;
 	}
-	return d;
+	if (dp[i][j-1]>dp[i-1][j]){
+		DP(i,j-1);
+	}
+	else DP(i-1,j);
 }
 signed main(){
 	IOS();
-	int N; cin>>N;
-	srand(time(0));
-	cout<<F(N)<<endl;
-
+	cin>>S>>T;
+	int n=SZ(S), m=SZ(T);
+	REP1(i,n){
+		REP1(j,m){
+			if (S[i-1]==T[j-1]){
+				dp[i][j]=dp[i-1][j-1]+1;
+			}
+			else dp[i][j]=max(dp[i-1][j], dp[i][j-1]);
+		}
+	}
+	DP(n,m);
+	cout<<res<<endl;
 }

@@ -13,7 +13,7 @@ using namespace std;
 #define ALL(x) x.begin(),x.end()
 #define SZ(x) (int)(x.size())
 #define SQ(x) (x)*(x)
-using pii = pair<int, int>;
+#define pii pair<int, int>
 #define pdd pair<double ,double>
 #define pcc pair<char, char> 
 #define endl '\n'
@@ -25,34 +25,31 @@ using pii = pair<int, int>;
 #define bug(...)
 #define IOS() ios::sync_with_stdio(0), cin.tie(0), cout.tie(0)
 #endif
-const ll inf = 1ll<<60;
+const ll inf = (1ll<<60);
 const int iinf=2147483647;
-const ll mod = 1e9+7;
-const ll maxn=2e5+5;
-
+const ll mod = 998244353;
+const ll maxn=5e3+5;
 const double PI=acos(-1);
-int F(int n){
-	if (n>2&&n%2==0) return 2;
-	int x=rand()%n;
-	int y=x;
-	int d=1;
-	auto g=[&](int x){
-		return (x*x+1)%n;
-	};
-	while (d==1){
-		x=g(x);
-		y=g(g(y));
-		 d=gcd(abs(x-y), n);
-	}
-	if (d==n){
-		return -1;
-	}
-	return d;
+ll pw(ll x, ll p){
+    ll ret=1;
+    while (p>0){
+        if (p&1){
+            ret*=x;
+			ret%=mod;
+        }
+        x*=x;
+        x%=mod;
+        p>>=1;
+    }
+    return ret;
 }
+
+ll inv(ll a){
+	return pw(a,mod-2);	
+}
+
 signed main(){
 	IOS();
-	int N; cin>>N;
-	srand(time(0));
-	cout<<F(N)<<endl;
-
+	
 }
+
