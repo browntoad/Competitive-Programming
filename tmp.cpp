@@ -26,7 +26,7 @@ using namespace std;
  
 const ll inf=(1ll<<60);
 const double PI=acos(-1);
-const int maxn=1e6+5;
+const int maxn=1e5+5;
 const int iinf=2147483647;
 const ll mod=1e9+7;
  
@@ -46,46 +46,40 @@ ll pw(ll x, ll p, ll m=mod){
 ll inv(ll a, ll m=mod){
     return pw(a,m-2);
 }
-int Bub(vector<int> vc){
-    int cnt=0;
-    int n=vc.size();
-    REP(i,n-1){
-        REP(j,n-1){
-            if (vc[j]>vc[j+1]) {
-                swap(vc[j], vc[j+1]);
-                cnt++;
-            }
-        }
-    }
-    return cnt;
-}
-int Ins(vector<int> vc){
-    int cnt=0, n=SZ(vc);
-    REP(i,n){
-        int j=i;
-        while(j>0&&vc[j-1]>vc[j]) {
-            swap(vc[j], vc[j-1]);
-            cnt++;
-            j--;
-        }
-    }
-    return cnt;
-}
 signed main(){
-    //IOS();
-    int n; cin>>n;
-    vector<int> vc(n);
-    REP(i,n){
-        vc[i]=n-i-1;
+    IOS();
+    int n,m; cin>>n>>m;
+    stack<bool> st[maxn];
+    REP1(i,n){
+        int x; cin>>x;
+        st[x].push(1);
     }
-    random_shuffle(ALL(vc));
-    REP(i,n) cout<<vc[i]<<' ';
+    int ans=n;
+    REP(i,m){
+        bool k; cin>>k;
+        int id; cin>>id;
+        if (k){
+            st[id].push(0);
+        }
+        else {
+            if (st[id].empty()) continue;
+            if (st[id].top()){
+                ans--;
+            }
+            st[id].pop();
+            
+        }
+    }
+    cout<<ans<<endl;
+    REP1(i,1e5){
+        while(!st[i].empty()){
+            if (st[i].top()) cout<<i<<' ';
+            st[i].pop();
+        }
+        
+    }
     cout<<endl;
-    int cnt=0;
-    int oth=0;
-    cout<<Bub(vc)<<' '<<Ins(vc)<<endl;
-    
-    
-    
-    cout<<cnt<<endl;
 }
+
+ 
+

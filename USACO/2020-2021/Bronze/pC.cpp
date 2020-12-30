@@ -25,35 +25,79 @@ using namespace std;
 #define bug(...)
 #define IOS() ios::sync_with_stdio(0), cin.tie(0), cout.tie(0)
 #endif
-
 const ll inf = 1ll<<60;
 const int iinf=2147483647;
 const ll mod = 1e9+7;
-const ll maxn=1e5+5;
+const ll maxn=2e5+5;
 const double PI=acos(-1);
-
-ll pw(ll x, ll p, ll m=mod){
+ll pw(ll x, ll p){
     ll ret=1;
     while (p>0){
         if (p&1){
             ret*=x;
-            ret%=m;
+			ret%=mod;
         }
         x*=x;
-        x%=m;
+        x%=mod;
         p>>=1;
     }
     return ret;
 }
 
-ll inv(ll a, ll m=mod){
-    return pw(a,m-2);
+ll inv(ll a){
+	return pw(a,mod-2);	
 }
+vector<int> ans;
+struct Point{
+	char dir;
+	int x;
+	int y;
+	int id;
+};
 
-//=======================================================================================
 
+vector<Point> vc;
+int n;
+int rec(Point p){
+	int ans=inf;
+	REP(i,n){
+		if (i==p.id||vc[i].dir==p.dir){
+			continue;
+		}
 
-signed main (){
-    IOS();
-    // code
+		if (p.dir=='E'){
+			if (vc[i].y>p.y||vc[i].x<p.x||(p.y-vc[i].y)>=(vc[i].x-p.x)) continue;
+			int v=rec(vc[i]);
+			if (v+vc[i].y>=p.y){
+				ans=min(ans, (vc[i].x-p.x));
+			}
+		}
+		else {
+			if (vc[i].y<p.y||vc[i].x>p.x||(p.x-vc[i].x)>=(vc[i].y-p.y)) continue;
+			int v=rec(vc[i]);
+			if (v+vc[i].x>=p.x){
+				ans=min(ans, (vc[i].y-p.y));
+			}
+		}
+	}
+	return ans;
+}
+signed main(){
+	IOS();
+	cin>>n;
+	vc=vector<Point> (n);
+	ans=vector<int> (n);
+	REP(i,n){
+		ans[i]=inf;
+		cin>>vc[i].dir>>vc[i].x>>vc[i].y;
+		vc[i].id=i;
+	} 
+	//sort(ALL(vc), cmp1);
+	
+	REP(i,n){
+		int val=rec(vc[i]);
+		if (val==inf) cout<<"Infinity"<<endl;
+		else cout<<val<<endl;
+	}
+	
 }

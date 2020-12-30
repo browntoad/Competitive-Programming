@@ -25,35 +25,57 @@ using namespace std;
 #define bug(...)
 #define IOS() ios::sync_with_stdio(0), cin.tie(0), cout.tie(0)
 #endif
-
 const ll inf = 1ll<<60;
 const int iinf=2147483647;
 const ll mod = 1e9+7;
-const ll maxn=1e5+5;
+const ll maxn=2e5+5;
 const double PI=acos(-1);
-
-ll pw(ll x, ll p, ll m=mod){
+ll pw(ll x, ll p){
     ll ret=1;
     while (p>0){
         if (p&1){
             ret*=x;
-            ret%=m;
+			ret%=mod;
         }
         x*=x;
-        x%=m;
+        x%=mod;
         p>>=1;
     }
     return ret;
 }
 
-ll inv(ll a, ll m=mod){
-    return pw(a,m-2);
+ll inv(ll a){
+	return pw(a,mod-2);	
 }
-
-//=======================================================================================
-
-
-signed main (){
-    IOS();
-    // code
+vector<int> graph[maxn];
+int ans=0;
+void dfs(int x, int prev){
+	if (SZ(graph[x])==1){
+		return;
+	}
+	int k=SZ(graph[x])+(x==1);
+	k=__lg(k);
+	if ((1<<k)!=SZ(graph[x])+(x==1)) k++;
+	ans+=k;
+	REP(i,SZ(graph[x])){
+		if (graph[x][i]==prev) continue;
+		ans++;
+		dfs(graph[x][i], x);
+	}
+}
+signed main(){
+	IOS();
+	int n; cin>>n;
+	if (n==1){
+		cout<<1<<endl;
+		return 0;
+	}
+	REP(i,n-1){
+		int x,y; cin>>x>>y;
+		graph[x].pb(y);
+		graph[y].pb(x);
+	}
+	dfs(1,-1);
+	cout<<ans<<endl;
+	
 }

@@ -25,35 +25,42 @@ using namespace std;
 #define bug(...)
 #define IOS() ios::sync_with_stdio(0), cin.tie(0), cout.tie(0)
 #endif
-
 const ll inf = 1ll<<60;
 const int iinf=2147483647;
 const ll mod = 1e9+7;
-const ll maxn=1e5+5;
+const ll maxn=2e5+5;
 const double PI=acos(-1);
-
-ll pw(ll x, ll p, ll m=mod){
+ll pw(ll x, ll p){
     ll ret=1;
     while (p>0){
         if (p&1){
             ret*=x;
-            ret%=m;
+			ret%=mod;
         }
         x*=x;
-        x%=m;
+        x%=mod;
         p>>=1;
     }
     return ret;
 }
 
-ll inv(ll a, ll m=mod){
-    return pw(a,m-2);
+ll inv(ll a){
+	return pw(a,mod-2);	
 }
-
-//=======================================================================================
-
-
-signed main (){
-    IOS();
-    // code
+signed main(){
+	IOS();
+	int n; cin>>n;
+	vector<int> vc(n);
+	REP(i,n) cin>>vc[i];
+	int ans=0;
+	REP(i,n){
+		int sum=0;
+		map<int, bool> mp;
+		FOR(j,i,n){
+			sum+=vc[j];
+			mp[vc[j]]=1;
+			if (sum%(j-i+1)==0&&mp[sum/(j-i+1)]) ans++;
+		}
+	}
+	cout<<ans<<endl;
 }

@@ -19,7 +19,7 @@ using namespace std;
 #define endl '\n'
 //#define TOAD
 #ifdef TOAD
-#define bug(x) cerr<<__LINE__<<": "<<#x<<" is "<<x<<endl
+#define bug(x) cerr<<"Line "<<__LINE__<<": "<<#x<<" is "<<x<<endl
 #define IOS()
 #else
 #define bug(...)
@@ -27,8 +27,8 @@ using namespace std;
 #endif
 const ll inf = (1ll<<60);
 const int iinf=2147483647;
-const ll mod = 998244353;
-const ll maxn=5e3+5;
+const ll mod = 1e9+7;
+const ll maxn=505;
 const double PI=acos(-1);
 ll pw(ll x, ll p){
     ll ret=1;
@@ -47,9 +47,27 @@ ll pw(ll x, ll p){
 ll inv(ll a){
 	return pw(a,mod-2);	
 }
-
+int dp[1005][1005];
 signed main(){
 	IOS();
-	
+	int n,m; cin>>n>>m;
+	vector<int> vc(n);
+	REP(i,n) {
+		cin>>vc[i];
+		vc[i]%=m;
+	}
+	if (n>m){
+		cout<<"YES\n";
+		return 0;
+	}
+	dp[0][0]=1;
+	REP1(i,n){
+		REP(j,m){
+			dp[i][j]=(dp[i-1][j]+dp[i-1][((j-vc[i-1])%m+m)%m])%inf;
+			//cout<<dp[i][j]<<' ';
+		}
+		//cout<<endl;
+	}
+	if (dp[n][0]>1) cout<<"YES\n";
+	else cout<<"NO\n";
 }
-
