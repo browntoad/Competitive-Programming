@@ -48,37 +48,7 @@ ll inv(ll a, ll m=mod){
 }
 signed main(){
     IOS();
-    int n,m; cin>>n>>m;
-    stack<bool> st[maxn];
-    REP1(i,n){
-        int x; cin>>x;
-        st[x].push(1);
-    }
-    int ans=n;
-    REP(i,m){
-        bool k; cin>>k;
-        int id; cin>>id;
-        if (k){
-            st[id].push(0);
-        }
-        else {
-            if (st[id].empty()) continue;
-            if (st[id].top()){
-                ans--;
-            }
-            st[id].pop();
-            
-        }
-    }
-    cout<<ans<<endl;
-    REP1(i,1e5){
-        while(!st[i].empty()){
-            if (st[i].top()) cout<<i<<' ';
-            st[i].pop();
-        }
-        
-    }
-    cout<<endl;
+    
 }
 
  

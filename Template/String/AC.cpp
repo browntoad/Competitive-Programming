@@ -17,25 +17,25 @@ using namespace std;
 #define pdd pair<double ,double>
 #define pcc pair<char, char> 
 #define endl '\n'
-#define TOAD
+//#define TOAD
 #ifdef TOAD
-#define bug(x) cerr<<"Line "<<__LINE__<<": "<<#x<<" is "<<x<<endl
+#define bug(x) cerr<<__LINE__<<": "<<#x<<" is "<<x<<endl
 #define IOS()
 #else
 #define bug(...)
 #define IOS() ios::sync_with_stdio(0), cin.tie(0), cout.tie(0)
 #endif
-const ll inf = (1ll<<60);
+const ll inf = 1ll<<60;
 const int iinf=2147483647;
-const ll mod = 998244353;
-const ll maxn=2e4+5;
+const ll mod = 1e9+7;
+const ll maxn=2e5+5;
 const double PI=acos(-1);
 ll pw(ll x, ll p){
     ll ret=1;
     while (p>0){
         if (p&1){
             ret*=x;
-            ret%=mod;
+			ret%=mod;
         }
         x*=x;
         x%=mod;
@@ -59,13 +59,6 @@ struct Node{
 };
 
 
-Node buffer[maxn]; int bfcnt=0;
-Node* newNode(){
-	buffer[bfcnt]=Node();
-	return &buffer[bfcnt++];
-}
-
-
 Node* walk(Node* ptr, char c){
 	if (ptr->ch[c-'a']) return ptr->ch[c-'a'];
 	return walk(ptr->fail, c);
@@ -73,7 +66,7 @@ Node* walk(Node* ptr, char c){
 struct AC{
 	Node* rt;
 	AC(){
-		rt=newNode();
+		rt=new Node();
 	}
 	vector<Node*> nodes;
 
@@ -81,12 +74,12 @@ struct AC{
 		Node *now=rt;
 		REP(i,SZ(s)){
 			if (now->ch[s[i]-'a']) now=now->ch[s[i]-'a'];
-			else now=now->ch[s[i]-'a']=newNode();
+			else now=now->ch[s[i]-'a']=new Node();
 		}		
 		return now;
 	}
 	void make_fail(){
-		Node* star=newNode();
+		Node* star=new Node();
 		REP(i,26) star->ch[i]=rt;
 		rt->fail=star;
 		queue<Node*> qu;
@@ -128,29 +121,7 @@ vector<int> match(const string &s, const vector<string>& targets){
 	}
 	return res;
 }
+
 signed main(){
 	IOS();
-	int t; cin>>t;
-	while(t--){
-		bfcnt=0;
-		string str; cin>>str;
-		int q; cin>>q;
-		int tmplen=0;
-		vector<string> vc;
-		REP(i,q){
-			string k; cin>>k;
-			vc.pb(k);
-			tmplen+=SZ(k);
-			if (tmplen>=maxn/2||i==q-1){
-				vector<int> ans=match(str, vc);
-				REP(i,SZ(ans)) cout<<ans[i]<<endl;
-				vc.clear();
-				tmplen=0;
-				bfcnt=0;
-			}
-
-		}
-
-	}
-
 }

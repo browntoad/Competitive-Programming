@@ -46,7 +46,7 @@ ll inv(ll a, ll b){
 }
 //================================================================================
 
-//Range Minimum Query
+//Basic Segment Tree (min)
 
 vector<int> seg(4*maxn), vc(maxn);
 
