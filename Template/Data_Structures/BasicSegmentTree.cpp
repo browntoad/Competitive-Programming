@@ -83,7 +83,7 @@ void MO(int pos, int nl, int nr, int val, int x){
     else {
         MO(pos, mid+1, nr, val, x+x+1);
     }
-    seg[x]=max(seg[x+x], seg[x+x+1]);
+    seg[x]=min(seg[x+x], seg[x+x+1]);
 }
 signed main(){
     IOS();

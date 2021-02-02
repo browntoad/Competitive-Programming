@@ -15,142 +15,157 @@ using namespace std;
 #define SQ(x) (x)*(x)
 #define pii pair<int, int>
 #define pdd pair<double ,double>
-#define pcc pair<char, char> 
+#define pcc pair<char, char>
 #define endl '\n'
-#define TOAD
+//#define TOAD
 #ifdef TOAD
-#define bug(x) cerr<<"Line "<<__LINE__<<": "<<#x<<" is "<<x<<endl
+#define bug(x) cerr<<__LINE__<<": "<<#x<<" is "<<x<<endl
 #define IOS()
 #else
 #define bug(...)
 #define IOS() ios::sync_with_stdio(0), cin.tie(0), cout.tie(0)
 #endif
-const ll inf = (1ll<<60);
+ 
+const ll inf = 1ll<<60;
 const int iinf=2147483647;
-const ll mod = 998244353;
-const ll maxn=2e4+5;
+const ll mod = 1e9+7;
+const ll maxn=135;
 const double PI=acos(-1);
-ll pw(ll x, ll p){
+ 
+ll pw(ll x, ll p, ll m=mod){
     ll ret=1;
     while (p>0){
         if (p&1){
             ret*=x;
-            ret%=mod;
+            ret%=m;
         }
         x*=x;
-        x%=mod;
+        x%=m;
         p>>=1;
     }
     return ret;
 }
-
-ll inv(ll a){
-	return pw(a,mod-2);	
+ 
+ll inv(ll a, ll m=mod){
+    return pw(a,m-2);
 }
-struct Node{
-	array<Node*, 26> ch;
-	Node* fail;
-	int cnt;
-	Node(){
-		fill(ALL(ch), nullptr);
-		fail=nullptr;
-		cnt=0;
-	}
-};
-
-
-Node buffer[maxn]; int bfcnt=0;
-Node* newNode(){
-	buffer[bfcnt]=Node();
-	return &buffer[bfcnt++];
+ 
+vector<pii> seg(4*maxn);
+vector<int> vc(maxn);
+vector<int> l1(4*maxn), l2(4*maxn);
+void push(int x){
+    if (l2[x]){
+        seg[x+x].f=seg[x].f;
+        seg[x+x].s=seg[x].s;
+        seg[x+x+1].f=seg[x].f;
+        seg[x+x].s=seg[x].s;
+        l2[x+x]=l2[x+x+1]=1;
+        l2[x]=0;
+    }
+    if (l1[x]){
+        l1[x+x]+=l1[x];
+        seg[x+x].f+=l1[x];
+        seg[x+x].s+=seg[x].s;
+        l1[x+x+1]+=l1[x];
+        seg[x+x+1].f+=l1[x];
+        seg[x+x+1].s+=l1[x];
+        l1[x]=0;
+    }
+}
+void build(int l, int r, int x){
+    if (l==r){
+        seg[x].f=vc[l];
+        seg[x].s=vc[l];
+        return;
+    }
+    int mid=(l+r)/2;
+    build(l,mid, x+x);
+    build(mid+1, r, x+x+1);
+    seg[x].f=max(seg[x+x].f, seg[x+x+1].f);
+    seg[x].s=seg[x+x].s+seg[x+x+1].s;
+}
+int QU(int l, int r, int nl, int nr, int x, bool tp){
+    if (tp){
+        if (nl>r||nr<l){
+            return 0;
+        }
+        if (nl>=l&&nr<=r){
+            return seg[x].s;
+        }
+        push(x);
+        int mid=(nl+nr)/2;
+        return max(QU(l,r,nl, mid, x+x, tp), QU(l, r, mid+1, nr, x+x+1, tp));
+    }
+    else {
+        if (nl>r||nr<l){
+            return (-1)*iinf;
+        }
+        if (nl>=l&&nr<=r){
+            return seg[x].f;
+        }
+        push(x);
+        int mid=(nl+nr)/2;
+        return QU(l,r,nl, mid, x+x, tp)+QU(l, r, mid+1, nr, x+x+1, tp);
+    }
+    
 }
 
-
-Node* walk(Node* ptr, char c){
-	if (ptr->ch[c-'a']) return ptr->ch[c-'a'];
-	return walk(ptr->fail, c);
+void MO(int l, int r, int nl, int nr, int val, int x, bool tp){
+    if (tp){ // change values
+        if (nl==nr){
+            seg[x].f+=val;
+            seg[x].s+=val;
+            l1[x]+=val;
+            return;
+        }
+        int mid=(nl+nr)/2;
+        push(x);
+        MO(l, min(r, mid), nl, mid, val, x+x, tp);
+        MO(max(l, mid+1), r, mid+1, nr, val, x+x+1, tp);
+        seg[x].f=seg[x+x].f+seg[x+x+1].f;
+        seg[x].s=max(seg[x+x].s, seg[x+x+1].s);
+    }
+    else { // assign values
+        if (nl==nr){
+            seg[x].f=val;
+            seg[x].s=val;
+            l2[x]=1;
+            return;
+        }
+        int mid=(nl+nr)/2;
+        push(x);
+        push(x);
+        MO(l, min(r, mid), nl, mid, val, x+x, tp);
+        MO(max(l, mid+1), r, mid+1, nr, val, x+x+1, tp);
+        seg[x].f=seg[x+x].f+seg[x+x+1].f;
+        seg[x].s=max(seg[x+x].s, seg[x+x+1].s);
+    }
+    
 }
-struct AC{
-	Node* rt;
-	AC(){
-		rt=newNode();
-	}
-	vector<Node*> nodes;
 
-	Node* insert(const string &s){
-		Node *now=rt;
-		REP(i,SZ(s)){
-			if (now->ch[s[i]-'a']) now=now->ch[s[i]-'a'];
-			else now=now->ch[s[i]-'a']=newNode();
-		}		
-		return now;
-	}
-	void make_fail(){
-		Node* star=newNode();
-		REP(i,26) star->ch[i]=rt;
-		rt->fail=star;
-		queue<Node*> qu;
-		qu.push(rt);
-		while(qu.size()){
-			Node* u=qu.front();
-			qu.pop();
-			REP(i,26){
-				if (u->ch[i]){
-					qu.push(u->ch[i]);
-					nodes.pb(u->ch[i]);
-					u->ch[i]->fail=walk(u->fail, i+'a');
-				}
-			}
-		}
-	}
-	void count(const string &s){
-		Node*ptr=rt;
-		REP(i,SZ(s)){
-			ptr=walk(ptr, s[i]);
-			ptr->cnt++;
-		}
-		RREP(i,SZ(nodes)){
-			nodes[i]->fail->cnt+=nodes[i]->cnt;
-		}
-	}
-};
-vector<int> match(const string &s, const vector<string>& targets){
-	AC ac;
-	vector<Node*> link;
-	REP(i,SZ(targets)){
-		link.pb(ac.insert(targets[i]));
-	}
-	vector<int> res;
-	ac.make_fail();
-	ac.count(s);
-	for (auto i:link){
-		res.pb(i->cnt);
-	}
-	return res;
-}
-signed main(){
-	IOS();
-	int t; cin>>t;
-	while(t--){
-		bfcnt=0;
-		string str; cin>>str;
-		int q; cin>>q;
-		int tmplen=0;
-		vector<string> vc;
-		REP(i,q){
-			string k; cin>>k;
-			vc.pb(k);
-			tmplen+=SZ(k);
-			if (tmplen>=maxn/2||i==q-1){
-				vector<int> ans=match(str, vc);
-				REP(i,SZ(ans)) cout<<ans[i]<<endl;
-				vc.clear();
-				tmplen=0;
-				bfcnt=0;
-			}
-
-		}
-
-	}
+signed main (){
+    IOS();
+    int n,q; cin>>n>>q;
+    REP1(i,n) cin>>vc[i];
+    build(1, n, 1);
+    REP(i,q){
+        int c; cin>>c;
+        int l,r; cin>>l>>r;
+        if (c==1){
+            int x; cin>>x;
+            MO(l, r, 1, n, x, 1, 1);
+        }
+        if (c==2){
+            int x; cin>>x;
+            MO(l,r, 1, n, x, 1, 0);
+        }
+        if (c==3){
+            cout<<QU(l, r, 1, n, 1, 1)<<endl;
+        }
+        if (c==4){
+            cout<<QU(l, r, 1, n, 1, 0)<<endl;
+        }
+    }
+    
 
 }
