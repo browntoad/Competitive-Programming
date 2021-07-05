@@ -28,28 +28,53 @@ using namespace std;
 const ll inf = 1ll<<60;
 const int iinf=2147483647;
 const ll mod = 1e9+7;
-const ll maxn=5006;
+const ll maxn=2e5+5;
 const double PI=acos(-1);
-ll pw(ll x, ll p, ll md=mod){
+ll pw(ll x, ll p){
     ll ret=1;
     while (p>0){
         if (p&1){
             ret*=x;
-			ret%=md;
+            ret%=mod;
         }
         x*=x;
-        x%=md;
+        x%=mod;
         p>>=1;
     }
     return ret;
 }
- 
-ll inv(ll a){
-	return pw(a,mod-2);	
-}
 
+ll inv(ll a){
+    return pw(a,mod-2);    
+}
 signed main(){
-	IOS();
-	int n,m; cin>>n>>m;
-	
+    IOS();
+    int n,k; cin>>n>>k;
+    vector<int> vc(n);
+    REP(i,n) cin>>vc[i];
+    int l=1, r=1e9;
+    while(l<=r){
+        if (l==r) {
+            cout<<l<<endl;
+            break;
+        }
+        int mid=(l+r)/2+(l+r)%2;
+        bool ok=false;
+        vector<int> tmp;
+        REP(i,n){
+            if((vc[i]<=mid)&&(tmp.empty()||tmp[SZ(tmp)-1]!=i-1)) tmp.pb(i);
+        }
+        int mx=0;
+        mx=max(mx, SZ(tmp));
+        tmp.clear();
+        REP1(i,n-1){
+            if((vc[i]<=mid)&&(tmp.empty()||tmp[SZ(tmp)-1]!=i-1)) tmp.pb(i);
+        }
+        mx=max(mx, SZ(tmp));
+        if (mx>=k){
+            l=mid;
+        }
+        else r=mid-1;
+    }
+    
 }

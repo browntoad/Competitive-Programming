@@ -92,7 +92,7 @@ struct Dinic{
 				e.cap-=ret;
 				G[e.to][e.rev].cap+=ret;
 				fl+=ret;
-				flow-=fl;
+				flow-=ret;
 				if (flow==0) break; 
 			}
 			

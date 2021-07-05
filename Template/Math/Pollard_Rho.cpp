@@ -42,7 +42,7 @@ int F(int n){
 	while (d==1){
 		x=g(x);
 		y=g(g(y));
-		 d=gcd(abs(x-y), n);
+		 d=__gcd(abs(x-y), n);
 	}
 	if (d==n){
 		return -1;
